@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/ErrorStyles.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-dark  navbar-expand-lg fixed-top" style="background-color:#0b1f3a;">
+        <div class="container">
+
+            <a class="navbar-brand" href="/">MusicStore</a>
+            <br />
+            <div class="ms-auto d-flex text-right gap-2">
+
+
+                @if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            Logout
+                        </button>
+                    }
+                }
+
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-3 ">
+
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["message"]
+            </div>
+        }
+
+        @RenderBody()
+
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

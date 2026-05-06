@@ -1,0 +1,56 @@
+﻿@model MusicStore.WebUI.Models.CartIndexViewModel
+
+<div class="container mt-4">
+    <h2>Your Cart</h2>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Item</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var line in Model.Cart.Lines)
+            {
+                <tr>
+                    <td>@line.Quantity</td>
+                    <td>@line.Instrument.Name</td>
+
+                    <td class="text-end">
+                        @line.Instrument.Price.ToString("C")
+                    </td>
+
+                    <td class="text-end">
+                        @((line.Quantity * line.Instrument.Price).ToString("C"))
+                    </td>
+
+                    <td class="text-end">
+                        @using (Html.BeginForm("RemoveFromCart", "Cart"))
+                        {
+                            @Html.Hidden("id", line.Instrument.Id)
+                            @Html.Hidden("returnUrl", Model.ReturnUrl)
+
+                            <button class="btn btn-danger btn-sm">
+                                Remove
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <h4>Total: @Model.Cart.ComputeTotalValue().ToString("C")</h4>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-between">
+        <a href="/" class="btn btn-secondary">Continue Shopping</a>
+        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-success">Checkout Now</a>
+    </div>
+</div>
