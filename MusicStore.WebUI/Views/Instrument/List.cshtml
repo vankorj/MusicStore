@@ -7,6 +7,35 @@
 
 <div class="container mt-4">
 
+    <!-- SEARCH + SORT BAR -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="get">
+                <input type="text" name="search" value="@Request.QueryString["search"]"
+                       placeholder="Search instruments..." class="form-control" />
+
+                <input type="hidden" name="category" value="@Request.QueryString["category"]" />
+                <input type="hidden" name="sort" value="@Request.QueryString["sort"]" />
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <form method="get">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="">Sort by...</option>
+                    <option value="price_asc" @(Request.QueryString["sort"] == "price_asc" ? "selected" : "")>Price: Low → High</option>
+                    <option value="price_desc" @(Request.QueryString["sort"] == "price_desc" ? "selected" : "")>Price: High → Low</option>
+                    <option value="name_asc" @(Request.QueryString["sort"] == "name_asc" ? "selected" : "")>Name: A → Z</option>
+                    <option value="name_desc" @(Request.QueryString["sort"] == "name_desc" ? "selected" : "")>Name: Z → A</option>
+                </select>
+
+                <input type="hidden" name="category" value="@Request.QueryString["category"]" />
+                <input type="hidden" name="search" value="@Request.QueryString["search"]" />
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT GRID -->
     <div class="row">
         @foreach (var p in Model.Instruments)
         {
@@ -16,9 +45,17 @@
         }
     </div>
 
+    <!-- PAGINATION -->
     <div class="d-flex justify-content-end mt-3">
         @Html.PageLinks(Model.PagingInfo,
-            x => Url.Action("List", new { page = x }))
+        x => Url.Action("List", new
+             {
+            page = x,
+            category = Request.QueryString["category"],
+            search = Request.QueryString["search"],
+            sort = Request.QueryString["sort"]
+        }))
+
     </div>
 
 </div>

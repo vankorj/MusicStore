@@ -16,15 +16,54 @@ namespace MusicStore.WebUI.Controllers
 			repository = repo;
 		}
 
-		public ViewResult List(string category, int page = 1)
+		public ViewResult List(string category, string search, string sort, int page = 1)
 		{
 			if (repository == null)
 				throw new System.Exception("IInstrumentRepository was not injected correctly.");
 
-			var query = repository.Instruments
-				.Where(g => string.IsNullOrEmpty(category) || g.Category == category)
-				.OrderBy(g => g.Id);
+			// Start with all instruments
+			var query = repository.Instruments.AsQueryable();
 
+			// CATEGORY FILTER
+			if (!string.IsNullOrEmpty(category))
+			{
+				query = query.Where(i => i.Category == category);
+			}
+
+			// SEARCH FILTER
+			if (!string.IsNullOrEmpty(search))
+			{
+				query = query.Where(i =>
+					i.Name.Contains(search) ||
+					i.Brand.Contains(search) ||
+					i.Category.Contains(search));
+			}
+
+			// SORTING (C# 7.3 switch)
+			switch (sort)
+			{
+				case "price_asc":
+					query = query.OrderBy(i => i.Price);
+					break;
+
+				case "price_desc":
+					query = query.OrderByDescending(i => i.Price);
+					break;
+
+				case "name_asc":
+					query = query.OrderBy(i => i.Name);
+					break;
+
+				case "name_desc":
+					query = query.OrderByDescending(i => i.Name);
+					break;
+
+				default:
+					query = query.OrderBy(i => i.Id);
+					break;
+			}
+
+			// PAGING
 			var totalItems = query.Count();
 
 			var pagedInstruments = query
@@ -32,6 +71,7 @@ namespace MusicStore.WebUI.Controllers
 				.Take(PageSize)
 				.ToList();
 
+			// VIEWMODEL
 			var model = new InstrumentsListViewModel
 			{
 				Instruments = pagedInstruments,
@@ -47,15 +87,16 @@ namespace MusicStore.WebUI.Controllers
 			return View(model);
 		}
 
+
 		[AllowAnonymous]
 		public FileContentResult GetImage(int id)
 		{
-			var Instrument = repository.Instruments
+			var instrument = repository.Instruments
 				.FirstOrDefault(g => g.Id == id);
 
-			if (Instrument != null && Instrument.ImageData != null)
+			if (instrument != null && instrument.ImageData != null)
 			{
-				return File(Instrument.ImageData, Instrument.ImageMimeType);
+				return File(instrument.ImageData, instrument.ImageMimeType);
 			}
 
 			return null;
