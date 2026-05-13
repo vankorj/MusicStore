@@ -46,7 +46,8 @@
     if (Model != null && Model.ImageData != null)
     {
         <div class="form-group">
-            <img src='@Url.Action("GetImage", "Product", new { productId = Model.Id })'
+            <img src='@Url.Action("GetImage", "Instrument", new { id = Model.Id })'
+
                  style="max-width:150px;" />
         </div>
     }

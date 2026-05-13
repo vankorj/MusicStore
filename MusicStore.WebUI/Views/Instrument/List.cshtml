@@ -48,14 +48,13 @@
     <!-- PAGINATION -->
     <div class="d-flex justify-content-end mt-3">
         @Html.PageLinks(Model.PagingInfo,
-        x => Url.Action("List", new
-             {
-            page = x,
-            category = Request.QueryString["category"],
-            search = Request.QueryString["search"],
-            sort = Request.QueryString["sort"]
-        }))
-
+            x => Url.Action("List", new
+            {
+                page = x,
+                category = Model.CurrentCategory,
+                search = Model.SearchTerm,
+                sort = Model.CurrentSort
+            }))
     </div>
 
 </div>

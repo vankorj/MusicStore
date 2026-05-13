@@ -4,7 +4,7 @@ namespace MusicStore.Domain.Models
 {
 	public class Instrument
 	{
-		public int? Id { get; set; }
+		public int Id { get; set; }
 
 		[Required]
 		[StringLength(50)]

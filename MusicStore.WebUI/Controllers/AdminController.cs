@@ -104,20 +104,13 @@ namespace MusicStore.WebUI.Controllers
 		// =========================
 		// DELETE
 		// =========================
-		[HttpPost]
-		[ValidateAntiForgeryToken]
+		[HttpGet]
 		public ActionResult Delete(int id)
 		{
-			var Instrument = repository.Instruments
-				.FirstOrDefault(p => p.Id == id);
-
-			if (Instrument != null)
-			{
-				repository.DeleteInstrument(id);
-				TempData["message"] = "Instrument deleted";
-			}
-
+			repository.DeleteInstrument(id);
+			TempData["message"] = "Instrument deleted";
 			return RedirectToAction("Index");
 		}
+
 	}
 }

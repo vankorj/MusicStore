@@ -9,7 +9,7 @@ namespace MusicStore.WebUI.Controllers
 	public class InstrumentController : Controller
 	{
 		private readonly IInstrumentRepository repository;
-		private const int PageSize = 4;
+		private const int PageSize = 3;
 
 		public InstrumentController(IInstrumentRepository repo)
 		{
@@ -39,7 +39,7 @@ namespace MusicStore.WebUI.Controllers
 					i.Category.Contains(search));
 			}
 
-			// SORTING (C# 7.3 switch)
+			// SORTING
 			switch (sort)
 			{
 				case "price_asc":
@@ -75,7 +75,12 @@ namespace MusicStore.WebUI.Controllers
 			var model = new InstrumentsListViewModel
 			{
 				Instruments = pagedInstruments,
+
+				// ⭐ THESE THREE FIX PAGING ⭐
 				CurrentCategory = category,
+				SearchTerm = search,
+				CurrentSort = sort,
+
 				PagingInfo = new PagingInfo
 				{
 					CurrentPage = page,
@@ -86,7 +91,6 @@ namespace MusicStore.WebUI.Controllers
 
 			return View(model);
 		}
-
 
 		[AllowAnonymous]
 		public FileContentResult GetImage(int id)
